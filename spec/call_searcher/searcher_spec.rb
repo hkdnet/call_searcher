@@ -1,4 +1,5 @@
 RSpec.describe CallSearcher::Searcher do
+  subject { searcher.search(ast) }
   let(:searcher) { CallSearcher::Searcher.new }
 
   let(:ast) do
@@ -13,23 +14,79 @@ end
       RUBY
     end
 
-    it do
-      expect(searcher.search(ast)).to be_empty
-    end
+    it { is_expected.to be_empty }
   end
 
   context 'call :foo' do
-    let(:text) do
-      <<~RUBY
+    context 'VCALL' do
+      let(:text) do
+        <<~RUBY
 def foo
 end
 foo
-      RUBY
+        RUBY
+      end
+
+      it do
+        expect(subject.size).to eq 1
+        expect(subject.first.type).to eq "NODE_VCALL"
+      end
     end
 
-    it do
-      result = searcher.search(ast)
-      expect(result.size).to eq 1
+    context 'FCALL' do
+      let(:text) do
+        <<~RUBY
+def foo
+end
+foo()
+        RUBY
+      end
+
+      it do
+        expect(subject.size).to eq 1
+        expect(subject.first.type).to eq "NODE_FCALL"
+      end
+    end
+
+    context 'QCALL' do
+      let(:text) do
+        <<~RUBY
+def foo
+end
+self&.foo
+        RUBY
+      end
+
+      it do
+        expect(subject.size).to eq 1
+        expect(subject.first.type).to eq "NODE_QCALL"
+      end
+    end
+
+    context 'CALL' do
+      let(:text) do
+        <<~RUBY
+def foo
+end
+self.foo
+        RUBY
+      end
+
+      it do
+        expect(subject.size).to eq 1
+        expect(subject.first.type).to eq "NODE_CALL"
+      end
+    end
+
+    context 'OPCALL' do
+      let(:text) do
+        '1 + 2'
+      end
+
+      it do
+        expect(subject.size).to eq 1
+        expect(subject.first.type).to eq "NODE_OPCALL"
+      end
     end
   end
 end

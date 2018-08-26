@@ -1,8 +1,14 @@
+# frozen_string_literal: true
+
 module CallSearcher
   class Searcher
     CALL_NODES = %w[
+      NODE_CALL
+      NODE_FCALL
+      NODE_OPCALL
+      NODE_QCALL
       NODE_VCALL
-    ] # TODO: add
+    ].freeze
     private_constant :CALL_NODES
 
     def search(ast)
