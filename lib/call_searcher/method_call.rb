@@ -28,7 +28,10 @@ module CallSearcher
       @arg_node.children.each_with_object([]) do |e, arr|
         break arr if e.nil? # end argument
 
-        if e.type == 'NODE_LIT'
+        case e.type
+        when 'NODE_LIT'
+          arr << e.children.first
+        when 'NODE_STR'
           arr << e.children.first
         else
           arr << e
