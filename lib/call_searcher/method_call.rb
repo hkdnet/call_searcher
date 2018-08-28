@@ -10,7 +10,7 @@ module CallSearcher
       case @type
       when "NODE_FCALL"
         @mid, @arg_node = node.children
-      when "NODE_CALL"
+      when "NODE_CALL", "NODE_QCALL"
         @recv_node, @mid, @arg_node = node.children
       else
       end
