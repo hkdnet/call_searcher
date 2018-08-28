@@ -12,21 +12,21 @@ module CallSearcher
     private_constant :CALL_NODES
 
     def search(ast)
-      ret = []
-      ret << ast if match?(ast)
-      search_children(ast.children, ret)
-      ret
+      nodes = []
+      nodes << ast if match?(ast)
+      search_children(ast.children, nodes)
+      nodes
     end
 
     private
 
-    def search_children(children, ret)
+    def search_children(children, nodes)
       return unless children
       children.each do |child|
         next unless child.is_a?(RubyVM::AST::Node)
 
-        ret << child if match?(child)
-        search_children(child.children, ret)
+        nodes << child if match?(child)
+        search_children(child.children, nodes)
       end
     end
 
