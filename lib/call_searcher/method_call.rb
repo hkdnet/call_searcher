@@ -2,7 +2,7 @@
 
 module CallSearcher
   class MethodCall
-    attr_reader :type, :mid, :receiver
+    attr_reader :type, :mid
     attr_reader :arg_node, :recv_node
 
     def initialize(node)
