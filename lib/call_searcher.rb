@@ -5,3 +5,4 @@ module CallSearcher
 end
 
 require 'call_searcher/searcher'
+require 'call_searcher/method_call'
