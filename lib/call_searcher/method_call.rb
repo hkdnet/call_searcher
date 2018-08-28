@@ -10,9 +10,10 @@ module CallSearcher
       case @type
       when "NODE_FCALL", "NODE_VCALL"
         @mid, @arg_node = node.children
-      when "NODE_CALL", "NODE_QCALL"
+      when "NODE_CALL", "NODE_QCALL", "NODE_OPCALL"
         @recv_node, @mid, @arg_node = node.children
       else
+        raise "unknown type"
       end
     end
 

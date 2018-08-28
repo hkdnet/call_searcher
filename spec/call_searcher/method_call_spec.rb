@@ -59,4 +59,19 @@ foo&.bar('a')
       expect(subject.args).to eq ['a']
     end
   end
+
+  context 'NODE_OPCALL' do
+    let(:text) do
+      <<-RUBY
+1 + 2
+      RUBY
+    end
+
+    it do
+      expect(subject.type).to eq 'NODE_OPCALL'
+      expect(subject.mid).to eq :+
+      expect(subject.recv_node).not_to be nil
+      expect(subject.args).to eq [2]
+    end
+  end
 end
