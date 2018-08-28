@@ -30,4 +30,19 @@ foo.bar
       expect(subject.args).to eq []
     end
   end
+
+  context 'NODE_QCALL' do
+    let(:text) do
+      <<-RUBY
+foo&.bar('a')
+      RUBY
+    end
+
+    it do
+      expect(subject.type).to eq 'NODE_QCALL'
+      expect(subject.mid).to eq :bar
+      expect(subject.recv_node).not_to be nil
+      expect(subject.args).to eq ['a']
+    end
+  end
 end
