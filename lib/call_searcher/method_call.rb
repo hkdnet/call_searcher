@@ -8,7 +8,7 @@ module CallSearcher
     def initialize(node)
       @type = node.type
       case @type
-      when "NODE_FCALL"
+      when "NODE_FCALL", "NODE_VCALL"
         @mid, @arg_node = node.children
       when "NODE_CALL", "NODE_QCALL"
         @recv_node, @mid, @arg_node = node.children
