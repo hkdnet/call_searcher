@@ -15,7 +15,7 @@ module CallSearcher
       nodes = []
       nodes << ast if match?(ast)
       search_children(ast.children, nodes)
-      nodes
+      nodes.map { |e| CallSearcher::MethodCall.new(e) }
     end
 
     private
