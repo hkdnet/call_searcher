@@ -4,11 +4,7 @@ RSpec.describe CallSearcher::MethodCall do
 
   describe 'basic attributes: type, mid, receiver' do
     context :VCALL do
-      let(:text) do
-        <<~RUBY
-        foo
-        RUBY
-      end
+      let(:text) { 'foo' }
 
       it do
         expect(subject.type).to eq :VCALL
@@ -18,11 +14,7 @@ RSpec.describe CallSearcher::MethodCall do
     end
 
     context :FCALL do
-      let(:text) do
-        <<~RUBY
-        foo(1)
-        RUBY
-      end
+      let(:text) { 'foo(1)' }
 
       it do
         expect(subject.type).to eq :FCALL
@@ -32,11 +24,7 @@ RSpec.describe CallSearcher::MethodCall do
     end
 
     context :CALL do
-      let(:text) do
-        <<~RUBY
-        foo.bar
-        RUBY
-      end
+      let(:text) { 'foo.bar' }
 
       it do
         expect(subject.type).to eq :CALL
@@ -46,11 +34,7 @@ RSpec.describe CallSearcher::MethodCall do
     end
 
     context :QCALL do
-      let(:text) do
-        <<~RUBY
-        foo&.bar('a')
-        RUBY
-      end
+      let(:text) { 'foo&.bar' }
 
       it do
         expect(subject.type).to eq :QCALL
@@ -60,11 +44,7 @@ RSpec.describe CallSearcher::MethodCall do
     end
 
     context :OPCALL do
-      let(:text) do
-        <<~RUBY
-        1 + 2
-        RUBY
-      end
+      let(:text) { '1 + 2' }
 
       it do
         expect(subject.type).to eq :OPCALL
