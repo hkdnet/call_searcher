@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'pathname'
+
 module CallSearcher
   class MethodCall
     attr_reader :node
@@ -37,6 +39,16 @@ module CallSearcher
 
     def inspect
       "<#{self.class} #{type}@#{location}>"
+    end
+
+    def github_url
+      if @context.github
+        "https://github.com/#{@context.github}/blob/master/#{relative_path}#L#{@node.first_lineno}"
+      end
+    end
+
+    def relative_path
+      Pathname.new(@context.path).relative_path_from(Pathname.new(@context.root_dir))
     end
   end
 end

@@ -8,7 +8,7 @@ module CallSearcher
 
     def search_dir(root_dir: '.', path:, github: nil)
       path = File.expand_path(path, root_dir)
-      context = CallSearcher::Context.new(github: github)
+      context = CallSearcher::Context.new(root_dir: root_dir, github: github)
       Dir.glob(File.join(path, "**", "*.rb")).reduce([]) do |arr, f|
         if File.file?(f)
           arr + search(file: f, context: context)
