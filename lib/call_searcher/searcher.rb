@@ -2,6 +2,10 @@
 
 module CallSearcher
   class Searcher
+    def initialize(&blk)
+      @condition = blk || ->(_) { true }
+    end
+
     def search(ast: nil, src: nil)
       if ast.nil? && src.nil?
         raise ArgumentError, "Either ast or src is required"
@@ -23,18 +27,15 @@ module CallSearcher
 
       case node.type
       when :CALL, :QCALL, :OPCALL, :FCALL, :VCALL
-        if match?(node)
-          ret << CallSearcher::MethodCall.new(node: node)
+        method_call = CallSearcher::MethodCall.new(node: node)
+        if @condition.call(method_call)
+          ret << method_call
         end
       else
         nil
       end
 
       ret
-    end
-
-    def match?(node)
-      true
     end
   end
 end

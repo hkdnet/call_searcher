@@ -85,4 +85,32 @@ self.foo
       end
     end
   end
+
+  context 'call :foo & :bar' do
+    let(:text) do
+      <<~RUBY
+foo
+bar
+      RUBY
+    end
+
+    it 'returns foo and bar' do
+      expect(subject.size).to eq 2
+      expect(subject[0].mid).to eq :foo
+      expect(subject[1].mid).to eq :bar
+    end
+
+    context 'with block' do
+      let(:searcher) do
+        CallSearcher::Searcher.new do |method_call|
+          method_call.mid == :foo
+        end
+      end
+
+      it 'returns only matched elements' do
+        expect(subject.size).to eq 1
+        expect(subject[0].mid).to eq :foo
+      end
+    end
+  end
 end
