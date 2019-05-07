@@ -1,5 +1,5 @@
 RSpec.describe CallSearcher::MethodCall do
-  subject { CallSearcher::MethodCall.new(node: node) }
+  subject { CallSearcher::MethodCall.new(node: node, context: CallSearcher::Context.new) }
   let(:node) { RubyVM::AbstractSyntaxTree.parse(text).children.last }
 
   describe 'basic attributes: type, mid, receiver' do

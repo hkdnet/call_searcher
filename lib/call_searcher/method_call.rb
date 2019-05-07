@@ -4,8 +4,9 @@ module CallSearcher
   class MethodCall
     attr_reader :node
 
-    def initialize(node:)
+    def initialize(node:, context:)
       @node = node
+      @context = context
     end
 
     def type
@@ -28,6 +29,10 @@ module CallSearcher
       else
         node.children[1]
       end
+    end
+
+    def location
+      "#{@context.path}:#{@node.first_lineno}"
     end
   end
 end
