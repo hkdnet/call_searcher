@@ -2,41 +2,31 @@
 
 module CallSearcher
   class MethodCall
-    attr_reader :type, :mid
-    attr_reader :arg_node, :recv_node
+    attr_reader :node
 
-    def initialize(node)
-      @type = node.type
-      case @type
-      when "NODE_FCALL", "NODE_VCALL"
-        @mid, @arg_node = node.children
-      when "NODE_CALL", "NODE_QCALL", "NODE_OPCALL"
-        @recv_node, @mid, @arg_node = node.children
+    def initialize(node:)
+      @node = node
+    end
+
+    def type
+      @type ||= node.type
+    end
+
+    def receiver
+      case type
+      when :FCALL, :VCALL
+        nil
       else
-        raise "unknown type"
+        node.children[0]
       end
     end
 
-    def args
-      @args ||= build_args
-    end
-
-    private
-
-    def build_args
-      return [] if @arg_node.nil?
-
-      @arg_node.children.each_with_object([]) do |e, arr|
-        break arr if e.nil? # end argument
-
-        case e.type
-        when 'NODE_LIT'
-          arr << e.children.first
-        when 'NODE_STR'
-          arr << e.children.first
-        else
-          arr << e
-        end
+    def mid
+      case type
+      when :FCALL, :VCALL
+        node.children[0]
+      else
+        node.children[1]
       end
     end
   end

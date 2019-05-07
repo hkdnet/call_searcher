@@ -1,77 +1,72 @@
 RSpec.describe CallSearcher::MethodCall do
-  subject { CallSearcher::MethodCall.new(node) }
-  let(:node) { RubyVM::AST.parse(text).children.last }
-  context 'NODE_VCALL' do
+  subject { CallSearcher::MethodCall.new(node: node) }
+  let(:node) { RubyVM::AbstractSyntaxTree.parse(text).children.last }
+  context :VCALL do
     let(:text) do
-      <<-RUBY
+      <<~RUBY
 foo
       RUBY
     end
 
     it do
-      expect(subject.type).to eq 'NODE_VCALL'
+      expect(subject.type).to eq :VCALL
       expect(subject.mid).to eq :foo
-      expect(subject.recv_node).to be nil
-      expect(subject.args).to eq []
+      expect(subject.receiver).to be nil
     end
   end
-  context 'NODE_FCALL' do
+  context :FCALL do
     let(:text) do
-      <<-RUBY
+      <<~RUBY
 foo(1)
       RUBY
     end
 
     it do
-      expect(subject.type).to eq 'NODE_FCALL'
+      expect(subject.type).to eq :FCALL
       expect(subject.mid).to eq :foo
-      expect(subject.recv_node).to be nil
-      expect(subject.args).to eq [1]
+      expect(subject.receiver).to be nil
     end
   end
 
-  context 'NODE_CALL' do
+  context :CALL do
     let(:text) do
-      <<-RUBY
+      <<~RUBY
 foo.bar
       RUBY
     end
 
     it do
-      expect(subject.type).to eq 'NODE_CALL'
+      expect(subject.type).to eq :CALL
       expect(subject.mid).to eq :bar
-      expect(subject.recv_node).not_to be nil
-      expect(subject.args).to eq []
+      expect(subject.receiver).not_to be nil
     end
   end
 
-  context 'NODE_QCALL' do
+  context :QCALL do
     let(:text) do
-      <<-RUBY
+      <<~RUBY
 foo&.bar('a')
       RUBY
     end
 
     it do
-      expect(subject.type).to eq 'NODE_QCALL'
+      expect(subject.type).to eq :QCALL
       expect(subject.mid).to eq :bar
-      expect(subject.recv_node).not_to be nil
-      expect(subject.args).to eq ['a']
+      expect(subject.receiver).not_to be nil
     end
   end
 
-  context 'NODE_OPCALL' do
+  context :OPCALL do
     let(:text) do
-      <<-RUBY
+      <<~RUBY
 1 + 2
       RUBY
     end
 
     it do
-      expect(subject.type).to eq 'NODE_OPCALL'
+      expect(subject.type).to eq :OPCALL
       expect(subject.mid).to eq :+
-      expect(subject.recv_node).not_to be nil
-      expect(subject.args).to eq [2]
+      expect(subject.receiver).not_to be nil
     end
   end
 end
