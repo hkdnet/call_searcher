@@ -28,13 +28,7 @@ local = 1    # local variable
 
     context 'call :foo' do
       context 'VCALL' do
-        let(:text) do
-          <<~RUBY
-def foo
-end
-foo
-          RUBY
-        end
+        let(:text) { 'foo' }
 
         it do
           expect(subject.size).to eq 1
@@ -43,13 +37,7 @@ foo
       end
 
       context 'FCALL' do
-        let(:text) do
-          <<~RUBY
-def foo
-end
-foo()
-          RUBY
-        end
+        let(:text) { 'foo()' }
 
         it do
           expect(subject.size).to eq 1
@@ -58,13 +46,7 @@ foo()
       end
 
       context 'QCALL' do
-        let(:text) do
-          <<~RUBY
-def foo
-end
-self&.foo
-          RUBY
-        end
+        let(:text) { 'self&.foo' }
 
         it do
           expect(subject.size).to eq 1
@@ -73,13 +55,7 @@ self&.foo
       end
 
       context 'CALL' do
-        let(:text) do
-          <<~RUBY
-def foo
-end
-self.foo
-          RUBY
-        end
+        let(:text) { 'self.foo' }
 
         it do
           expect(subject.size).to eq 1
@@ -88,9 +64,7 @@ self.foo
       end
 
       context 'OPCALL' do
-        let(:text) do
-          '1 + 2'
-        end
+        let(:text) { '1 + 2' }
 
         it do
           expect(subject.size).to eq 1
@@ -101,7 +75,7 @@ self.foo
 
     context 'call :foo & :bar' do
       let(:text) do
-        <<~RUBY
+        <<-RUBY
 foo
 bar
         RUBY
