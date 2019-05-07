@@ -62,14 +62,14 @@ local = 1    # local variable
           expect(subject.first.type).to eq :CALL
         end
       end
+    end
 
-      context 'OPCALL' do
-        let(:text) { '1 + 2' }
+    context 'OPCALL' do
+      let(:text) { '1 + 2' }
 
-        it do
-          expect(subject.size).to eq 1
-          expect(subject.first.type).to eq :OPCALL
-        end
+      it do
+        expect(subject.size).to eq 1
+        expect(subject.first.type).to eq :OPCALL
       end
     end
 
