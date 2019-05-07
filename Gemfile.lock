@@ -37,7 +37,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.16)
+  bundler (~> 2.0)
   call_searcher!
   pry-byebug
   rake (~> 10.0)
