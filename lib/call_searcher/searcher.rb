@@ -2,36 +2,39 @@
 
 module CallSearcher
   class Searcher
-    CALL_NODES = %w[
-      NODE_CALL
-      NODE_FCALL
-      NODE_OPCALL
-      NODE_QCALL
-      NODE_VCALL
-    ].freeze
-    private_constant :CALL_NODES
+    def search(ast: nil, src: nil)
+      if ast.nil? && src.nil?
+        raise ArgumentError, "Either ast or src is required"
+      end
 
-    def search(ast)
-      nodes = []
-      nodes << ast if match?(ast)
-      search_children(ast.children, nodes)
-      nodes.map { |e| CallSearcher::MethodCall.new(e) }
+      if ast.nil?
+        ast = RubyVM::AbstractSyntaxTree.parse(src)
+      end
+
+      filter(ast)
     end
 
     private
 
-    def search_children(children, nodes)
-      return unless children
-      children.each do |child|
-        next unless child.is_a?(RubyVM::AST::Node)
-
-        nodes << child if match?(child)
-        search_children(child.children, nodes)
+    def filter(node)
+      ret = node.children.grep(RubyVM::AbstractSyntaxTree::Node).flat_map do |child|
+        filter(child)
       end
+
+      case node.type
+      when :CALL, :QCALL, :OPCALL, :FCALL, :VCALL
+        if match?(node)
+          ret << CallSearcher::MethodCall.new(node: node)
+        end
+      else
+        nil
+      end
+
+      ret
     end
 
     def match?(node)
-      CALL_NODES.include?(node.type)
+      true
     end
   end
 end

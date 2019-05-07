@@ -1,10 +1,6 @@
 RSpec.describe CallSearcher::Searcher do
-  subject { searcher.search(ast) }
+  subject { searcher.search(src: text) }
   let(:searcher) { CallSearcher::Searcher.new }
-
-  let(:ast) do
-    RubyVM::AST.parse(text)
-  end
 
   context 'no call' do
     let(:text) do
@@ -29,7 +25,7 @@ foo
 
       it do
         expect(subject.size).to eq 1
-        expect(subject.first.type).to eq "NODE_VCALL"
+        expect(subject.first.type).to eq :VCALL
       end
     end
 
@@ -44,7 +40,7 @@ foo()
 
       it do
         expect(subject.size).to eq 1
-        expect(subject.first.type).to eq "NODE_FCALL"
+        expect(subject.first.type).to eq :FCALL
       end
     end
 
@@ -59,7 +55,7 @@ self&.foo
 
       it do
         expect(subject.size).to eq 1
-        expect(subject.first.type).to eq "NODE_QCALL"
+        expect(subject.first.type).to eq :QCALL
       end
     end
 
@@ -74,7 +70,7 @@ self.foo
 
       it do
         expect(subject.size).to eq 1
-        expect(subject.first.type).to eq "NODE_CALL"
+        expect(subject.first.type).to eq :CALL
       end
     end
 
@@ -85,7 +81,7 @@ self.foo
 
       it do
         expect(subject.size).to eq 1
-        expect(subject.first.type).to eq "NODE_OPCALL"
+        expect(subject.first.type).to eq :OPCALL
       end
     end
   end
