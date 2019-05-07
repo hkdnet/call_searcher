@@ -34,5 +34,9 @@ module CallSearcher
     def location
       "#{@context.path}:#{@node.first_lineno}"
     end
+
+    def inspect
+      "<#{self.class} #{type}@#{location}>"
+    end
   end
 end
