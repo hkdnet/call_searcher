@@ -3,31 +3,38 @@
 module CallSearcher
   class Searcher
     def initialize(&blk)
-      @condition = blk || ->(_) { true }
+      @condition = blk || ->(*) { true }
     end
 
-    def search(ast: nil, src: nil)
-      if ast.nil? && src.nil?
-        raise ArgumentError, "Either ast or src is required"
+    def search_dir(root_dir: '.', path:, github: nil)
+      path = File.expand_path(path, root_dir)
+      context = CallSearcher::Context.new(root_dir: root_dir, github: github)
+      Dir.glob(File.join(path, "**", "*.rb")).reduce([]) do |arr, f|
+        if File.file?(f)
+          arr + search(file: f, context: context)
+        end
       end
+    end
 
-      if ast.nil?
-        ast = RubyVM::AbstractSyntaxTree.parse(src)
-      end
+    def search(file:, context: nil)
+      context = context&.dup || CallSearcher::Context.new
+      context.path = file
 
-      filter(ast)
+      ast = RubyVM::AbstractSyntaxTree.parse_file(file)
+
+      filter(ast, context)
     end
 
     private
 
-    def filter(node)
+    def filter(node, context)
       ret = node.children.grep(RubyVM::AbstractSyntaxTree::Node).flat_map do |child|
-        filter(child)
+        filter(child, context)
       end
 
       case node.type
       when :CALL, :QCALL, :OPCALL, :FCALL, :VCALL
-        method_call = CallSearcher::MethodCall.new(node: node)
+        method_call = CallSearcher::MethodCall.new(node: node, context: context)
         if @condition.call(method_call)
           ret << method_call
         end

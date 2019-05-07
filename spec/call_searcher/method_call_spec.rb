@@ -1,72 +1,56 @@
 RSpec.describe CallSearcher::MethodCall do
-  subject { CallSearcher::MethodCall.new(node: node) }
+  subject { CallSearcher::MethodCall.new(node: node, context: CallSearcher::Context.new) }
   let(:node) { RubyVM::AbstractSyntaxTree.parse(text).children.last }
-  context :VCALL do
-    let(:text) do
-      <<~RUBY
-foo
-      RUBY
+
+  describe 'basic attributes: type, mid, receiver' do
+    context :VCALL do
+      let(:text) { 'foo' }
+
+      it do
+        expect(subject.type).to eq :VCALL
+        expect(subject.mid).to eq :foo
+        expect(subject.receiver).to be nil
+      end
     end
 
-    it do
-      expect(subject.type).to eq :VCALL
-      expect(subject.mid).to eq :foo
-      expect(subject.receiver).to be nil
-    end
-  end
-  context :FCALL do
-    let(:text) do
-      <<~RUBY
-foo(1)
-      RUBY
+    context :FCALL do
+      let(:text) { 'foo(1)' }
+
+      it do
+        expect(subject.type).to eq :FCALL
+        expect(subject.mid).to eq :foo
+        expect(subject.receiver).to be nil
+      end
     end
 
-    it do
-      expect(subject.type).to eq :FCALL
-      expect(subject.mid).to eq :foo
-      expect(subject.receiver).to be nil
-    end
-  end
+    context :CALL do
+      let(:text) { 'foo.bar' }
 
-  context :CALL do
-    let(:text) do
-      <<~RUBY
-foo.bar
-      RUBY
+      it do
+        expect(subject.type).to eq :CALL
+        expect(subject.mid).to eq :bar
+        expect(subject.receiver).not_to be nil
+      end
     end
 
-    it do
-      expect(subject.type).to eq :CALL
-      expect(subject.mid).to eq :bar
-      expect(subject.receiver).not_to be nil
-    end
-  end
+    context :QCALL do
+      let(:text) { 'foo&.bar' }
 
-  context :QCALL do
-    let(:text) do
-      <<~RUBY
-foo&.bar('a')
-      RUBY
+      it do
+        expect(subject.type).to eq :QCALL
+        expect(subject.mid).to eq :bar
+        expect(subject.receiver).not_to be nil
+      end
     end
 
-    it do
-      expect(subject.type).to eq :QCALL
-      expect(subject.mid).to eq :bar
-      expect(subject.receiver).not_to be nil
-    end
-  end
+    context :OPCALL do
+      let(:text) { '1 + 2' }
 
-  context :OPCALL do
-    let(:text) do
-      <<~RUBY
-1 + 2
-      RUBY
-    end
-
-    it do
-      expect(subject.type).to eq :OPCALL
-      expect(subject.mid).to eq :+
-      expect(subject.receiver).not_to be nil
+      it do
+        expect(subject.type).to eq :OPCALL
+        expect(subject.mid).to eq :+
+        expect(subject.receiver).not_to be nil
+      end
     end
   end
 end
