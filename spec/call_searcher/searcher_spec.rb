@@ -13,12 +13,13 @@ RSpec.describe CallSearcher::Searcher do
       end
     end
 
-
     context 'no call' do
       let(:text) do
-        <<~RUBY
-def foo
-end
+        <<-RUBY
+def foo; end # method definition
+local = 1    # local variable
+:foo         # symbol
+'foo'        # string literal
         RUBY
       end
 
