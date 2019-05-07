@@ -100,5 +100,27 @@ bar
         end
       end
     end
+
+    context 'eval' do
+      let(:text) { 'eval("foo")' }
+      let(:searcher) do
+        CallSearcher::Searcher.new { |method_call| method_call.mid == :foo }
+      end
+
+      it 'does not return method calls in eval string' do
+        expect(subject.size).to eq 0
+      end
+    end
+
+    context 'send' do
+      let(:text) { 'send(:foo)' }
+      let(:searcher) do
+        CallSearcher::Searcher.new { |method_call| method_call.mid == :foo }
+      end
+
+      it 'does not return method calls invoked by send' do
+        expect(subject.size).to eq 0
+      end
+    end
   end
 end
