@@ -1,8 +1,6 @@
 # CallSearcher
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/call_searcher`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A static analyzer which helps you know where a method is called.
 
 ## Installation
 
@@ -22,7 +20,17 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'call_searcher'
+
+s = CallSearcher::Searcher.new { |e| e.mid == :method_name }
+
+result = s.search_dir(root_dir: 'path/to/your/repo', path: '{app,lib,spec}', github: 'org/repo')
+
+result.each do |e|
+  puts e.github_url
+end
+```
 
 ## Development
 
